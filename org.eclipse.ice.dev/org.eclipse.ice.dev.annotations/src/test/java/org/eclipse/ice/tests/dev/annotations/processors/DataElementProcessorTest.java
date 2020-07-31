@@ -13,8 +13,13 @@ package org.eclipse.ice.tests.dev.annotations.processors;
 
 import static com.google.testing.compile.CompilationSubject.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import javax.tools.JavaFileObject;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 
 import com.google.testing.compile.Compilation;
@@ -248,6 +253,7 @@ class DataElementProcessorTest {
 
 	/**
 	 * Test that a single DataField generates as expected.
+	 * @throws IOException 
 	 */
 	@Test
 	void testWithSingleDataFieldSucceeds() {

@@ -7,11 +7,14 @@
  *
  * Contributors:
  *    Daniel Bluhm - Initial implementation
+ *    Michael Walsh
  *******************************************************************************/
 
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.Writer;
+
+import javax.tools.JavaFileObject;
 
 import lombok.Builder;
 import lombok.NonNull;
@@ -64,9 +67,8 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 
 	@Builder
 	public PersistenceHandlerWriter(
-		String packageName, String elementInterface, String interfaceName,
-		String className, String implementation, String collection,
-		@NonNull Fields fields, @NonNull Types types, Writer writer
+		String packageName, String elementInterface, String className, String interfaceName,
+		String implementation, String collection, @NonNull Fields fields, @NonNull Types types, JavaFileObject generatedFile
 	) {
 		super();
 		this.context.put(PACKAGE, packageName);
@@ -77,6 +79,6 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 		this.context.put(IMPLEMENTATION, implementation);
 		this.context.put(FIELDS, fields);
 		this.context.put(TYPES, types);
-		this.writer = writer;
+		this.generatedFile = generatedFile;
 	}
 }
