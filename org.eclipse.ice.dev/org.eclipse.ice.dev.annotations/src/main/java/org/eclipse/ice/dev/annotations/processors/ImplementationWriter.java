@@ -23,7 +23,7 @@ import lombok.NonNull;
  * Writer for DataElement Implementation classes.
  * @author Daniel Bluhm
  */
-public class ImplementationWriter extends VelocitySourceWriter {
+public abstract class ImplementationWriter extends VelocitySourceWriter {
 
 	/**
 	 * Context key for package.
@@ -60,6 +60,10 @@ public class ImplementationWriter extends VelocitySourceWriter {
 		this.context.put(FIELDS, fields);
 		this.context.put(TYPES, types);
 		this.generatedFile = generatedFile;
+	}
+	
+	protected ImplementationWriter() {
+		
 	}
 
 }

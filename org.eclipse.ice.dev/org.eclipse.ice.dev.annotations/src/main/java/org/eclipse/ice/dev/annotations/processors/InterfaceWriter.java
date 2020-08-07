@@ -23,7 +23,7 @@ import lombok.NonNull;
  * Writer for DataElement Interfaces.
  * @author Daniel Bluhm
  */
-public class InterfaceWriter extends VelocitySourceWriter {
+public abstract class InterfaceWriter extends VelocitySourceWriter {
 
 	/**
 	 * Context key for package.

@@ -11,6 +11,10 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.Writer;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 import javax.tools.JavaFileObject;
 
