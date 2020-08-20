@@ -13,7 +13,8 @@ package org.eclipse.ice.dev.annotations.processors;
 import javax.lang.model.element.Element;
 
 /**
- * Interface for helper classes that generate the various names and metadata for class generation
+ * Interface for helper classes that generate the various names and metadata for
+ * class generation
  *
  */
 public interface NameGenerator {
@@ -30,4 +31,5 @@ public interface NameGenerator {
 
 	String extractCollectionName(Element element);
 
+	String getPersistenceHandlerInterfaceName();
 }

@@ -22,7 +22,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Properties used to initialize Velocity.
  */
-class VelocityProperties extends Properties {
+enum VelocityProperties {
+
+	// Set up Velocity using the Singleton approach; ClasspathResourceLoader allows
+	// us to load templates from src/main/resources
+	RESOURCE_LOADER("resource.loader", "class"), CLASS_RESOURCE_LOADER("class.resource.loader.class",
+			"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
 	/**
 	 * Serial Version ID.
@@ -35,14 +40,18 @@ class VelocityProperties extends Properties {
 	private static final Logger logger = LoggerFactory.getLogger(VelocityProperties.class);
 
 	/**
-	 * Velocity property filename.
+	 * Get key from enum.
+	 * 
+	 * @return key
 	 */
 	private static final String FILENAME = "velocity.properties";
 
 	private static VelocityProperties instance = null;
 
 	/**
-	 * Construct VelocityProperties, loading from resource file.
+	 * Get value from enum.
+	 * 
+	 * @return value
 	 */
 	private VelocityProperties() {
 		try (InputStream propertyStream = getClass().getClassLoader().getResourceAsStream(FILENAME)) {
@@ -54,9 +63,15 @@ class VelocityProperties extends Properties {
 		}
 	}
 
-	public static VelocityProperties get() {
-		if (instance == null) {
-			instance = new VelocityProperties();
+	/**
+	 * Generate and return Properties from enum.
+	 * 
+	 * @return Properties
+	 */
+	public static Properties get() {
+		Properties p = new Properties();
+		for (VelocityProperties vp : VelocityProperties.values()) {
+			p.setProperty(vp.key(), vp.value());
 		}
 		return instance;
 	}
