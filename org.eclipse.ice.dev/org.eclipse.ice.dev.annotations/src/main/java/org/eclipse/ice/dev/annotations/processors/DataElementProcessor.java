@@ -54,6 +54,10 @@ import com.google.auto.service.AutoService;
  * DataElement, populating the implementation with metadata and fields specified
  * with the DataField annotation.
  */
+/**
+ * @author Michael Walsh
+ *
+ */
 @SupportedAnnotationTypes({
 	"org.eclipse.ice.dev.annotations.DataElement",
 	"org.eclipse.ice.dev.annotations.DataField",
@@ -89,9 +93,26 @@ public class DataElementProcessor extends AbstractProcessor {
 	private static final String INTERFACE_TEMPLATE = "templates/ElementInterface.vm";
 
 	protected Messager messager;
+	
+	/**
+	 * Util object provided by the Velocity Templating Engine
+	 */
 	protected Elements elementUtils;
+	
+	/**
+	 * For serialization and deserializion of objects to and from json during processing
+	 */
 	protected ObjectMapper mapper;
+	
+	/**
+	 * For the extraction of key data from Spec classes used in class generation
+	 */
 	protected DataElementAnnotationExtractor extractor;
+	
+	
+	/**
+	 * Util class for various specific data extraction from Elements
+	 */
 	private SpecExtractionHelper specExtractionHelper = new SpecExtractionHelper();
 	
 
