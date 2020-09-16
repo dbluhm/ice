@@ -13,15 +13,9 @@ package org.eclipse.ice.dev.annotations.processors;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
@@ -36,13 +30,9 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardLocation;
 
 import org.apache.velocity.app.Velocity;
 import org.eclipse.ice.dev.annotations.DataElement;
-import org.eclipse.ice.dev.annotations.DataField;
-import org.eclipse.ice.dev.annotations.Persisted;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.auto.service.AutoService;
@@ -53,8 +43,8 @@ import com.google.auto.service.AutoService;
  * This will generate an implementation for an interface annotated with
  * DataElement, populating the implementation with metadata and fields specified
  * with the DataField annotation.
- */
-/**
+ * 
+ * @author Daniel Bluhm 
  * @author Michael Walsh
  *
  */
@@ -64,6 +54,9 @@ import com.google.auto.service.AutoService;
 @AutoService(Processor.class)
 public class DataElementProcessor extends AbstractProcessor {
 
+	/**
+	 * logger
+	 */
 	protected Messager messager;
 
 	/**
