@@ -13,6 +13,7 @@ package org.eclipse.ice.tests.dev.annotations.processors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -131,11 +132,54 @@ class TypesTest {
 			Field.builder()
 				.name("test")
 				.type("com.example.String")
+				.build(),
+			Field.builder()
+				.name("test")
+				.type("com.other.String")
 				.build()
 		));
 		Set<String> imports = types.getImports();
 		assertFalse(imports.contains("com.example.String"));
 		assertEquals("java.lang.String", types.resolve("java.lang.String"));
 		assertEquals("com.example.String", types.resolve("com.example.String"));
+		assertEquals("com.other.String", types.resolve("com.other.String"));
+	}
+
+	@Test
+	void testGetContainedValue() {
+		assertEquals(
+			"java.lang.String",
+			Types.getContainedValueType("java.util.List<java.lang.String>")
+		);
+		assertEquals(
+			"java.util.Date",
+			Types.getContainedValueType(
+				"java.util.Map<java.lang.String, java.util.Date>"
+			)
+		);
+		assertNull(Types.getContainedValueType("java.lang.String"));
+	}
+
+	@Test
+	void testGetContainedKey() {
+		assertEquals(
+			"java.lang.String",
+			Types.getMapKeyType(
+				"java.util.Map<java.lang.String, java.util.Date>"
+			)
+		);
+		assertNull(Types.getMapKeyType("java.lang.String"));
+	}
+
+	@Test
+	void testTypeParameterRetrieval() {
+		assertEquals(
+			List.of("java.lang.String", "java.util.Date"),
+			Types.getTypeParameters("java.util.Map<java.lang.String, java.util.Date>")
+		);
+		assertEquals(
+			Collections.emptyList(),
+			Types.getTypeParameters("java.lang.String")
+		);
 	}
 }

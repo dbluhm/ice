@@ -89,6 +89,23 @@ public abstract class AnnotatedElement {
 	}
 
 	/**
+	 * Get a map of annotation value names to the value identified by that name.
+	 *
+	 * This is useful when dealing with a complicated Annotation potentially
+	 * containing a value that is a Class object. Otherwise, it is recommended to
+	 * directly retrieve the value from an Annotation instance.
+	 * @param mirror AnnotationMirror from which values will be retrieved
+	 * @return Map of String to unwrapped AnnotationValue (Object)
+	 */
+	public Map<String, Object> getAnnotationValueMap(AnnotationMirror mirror) {
+		return mirror.getElementValues().entrySet().stream()
+			.collect(Collectors.toMap(
+				entry -> entry.getKey().getSimpleName().toString(),
+				entry -> entry.getValue().getValue()
+		));
+	}
+
+	/**
 	 * Get a list of annotation values from an annotation mirror of a given type.
 	 *
 	 * This is useful when dealing with a complicated Annotation potentially

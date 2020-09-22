@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.SimpleAnnotationValueVisitor9;
 
 import org.eclipse.ice.dev.annotations.DataField;
 
@@ -27,6 +29,41 @@ public class DataFieldSpec extends AnnotatedElement {
 	).stream()
 		.map(cls -> cls.getCanonicalName())
 		.collect(Collectors.toSet());
+
+	private static class AnnotationStringifier
+		extends SimpleAnnotationValueVisitor9<String, Void>
+	{
+		@Override
+		protected String defaultAction(Object o, Void p) {
+			return o.toString();
+		}
+
+		public String visitAnnotation(
+			AnnotationMirror mirror
+		) {
+			return visitAnnotation(mirror, null);
+		}
+
+		@Override
+		public String visitAnnotation(
+			AnnotationMirror mirror, Void p
+		) {
+			return String.format("@%s(%s)",
+				mirror.getAnnotationType().toString(),
+				String.join(
+					", ",
+					mirror.getElementValues().entrySet().stream()
+						.map(entry ->
+							entry.getKey().toString() + "=" + visit(entry.getValue())
+						).collect(Collectors.toList()))
+			);
+		}
+
+		@Override
+		public String visitType(TypeMirror t, Void p) {
+			return t.toString();
+		}
+	}
 
 	/**
 	 * Used to get DataField Annotation values.
@@ -61,6 +98,10 @@ public class DataFieldSpec extends AnnotatedElement {
 		return this.element.getModifiers();
 	}
 
+	private String flattenAnnotationMirror(AnnotationMirror mirror) {
+		return new AnnotationStringifier().visitAnnotation(mirror);
+	}
+
 	/**
 	 * Return the set of annotations on this DataField, excepting the DataField
 	 * Annotation itself.
@@ -71,7 +112,7 @@ public class DataFieldSpec extends AnnotatedElement {
 			.filter(mirror -> !ANNOTATION_CLASS_NAMES.contains(
 				mirror.getAnnotationType().toString()
 			))
-			.map(mirror -> mirror.toString())
+			.map(this::flattenAnnotationMirror)
 			.collect(Collectors.toList());
 	}
 

@@ -11,21 +11,21 @@
  *******************************************************************************/
 package gov.ornl.rse.renderer.client.test;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 
 import javax.annotation.PostConstruct;
 
 import org.eclipse.ice.renderer.Renderer;
-import org.eclipse.ice.renderer.Person;
-import org.eclipse.ice.renderer.PersonImplementation;
 
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
 @Route
 public class MainView extends VerticalLayout {
 
-	private Renderer<VaadinRendererClient<Person>, Person> renderer;
+	private Renderer<VaadinRendererClient<Car>, Car> carRenderer;
 
 	/**
 	 * Constructor
@@ -39,29 +39,43 @@ public class MainView extends VerticalLayout {
 	 */
 	@PostConstruct
 	public void render() {
-
+		add(new H1("Here's an auto-generated form!"));
 		// Nothing to do here - just sample setup
-		Person ross = new PersonImplementation();
+		Car elantra = new CarImplementation();
 		try {
-			ross.setFirstName("Ross");
-			ross.setLastName("Whitfield");
-			ross.setDescription("Ross' name described by a generated IDataElement");
+			elantra.setName("Car");
+			elantra.setDescription("A model for cars");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(ross.toJson());
-
-		renderer = new Renderer<VaadinRendererClient<Person>, Person>();
-		renderer.setViewer(new VaadinRendererClient<Person>());
-		BiConsumer<VaadinRendererClient<Person>, Person> drawViewFunc = (v, w) -> {
+		elantra.setMake("Hyundai");
+		elantra.setModel("Elantra");
+		elantra.setYear(2005);
+		carRenderer = new Renderer<FormRendererClient<Car>, Car>();
+		carRenderer.setViewer(new FormRendererClient<Car>());
+		BiConsumer<FormRendererClient<Car>, Car> carDraw = (v, w) -> {
 			v.setData(w);
 			add(v);
 		};
-		renderer.setDataElement(ross);
-		renderer.setDrawMethod(drawViewFunc);
+		carRenderer.setDataElement(elantra);
+		carRenderer.setDrawMethod(carDraw);
 
-		renderer.render();
+		carRenderer.render();
+
+		Test test = new TestImplementation();
+		try {
+			test.setName("Test Name");
+			test.setCars(List.of(elantra));
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		String testJson = test.toJson();
+		Test newTest = new TestImplementation();
+		newTest.fromJson(testJson);
+		System.out.println(test);
+		System.out.println(newTest);
 	}
 
 }

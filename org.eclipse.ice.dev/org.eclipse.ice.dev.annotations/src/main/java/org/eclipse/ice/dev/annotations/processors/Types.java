@@ -11,8 +11,11 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -31,6 +34,43 @@ public class Types {
 	 * the last element of a type hierarchy (through capturing group 1).
 	 */
 	private static final Pattern TYPE_SHORTENER = Pattern.compile("(?:\\w+\\.)*([\\w\\$]+)\\b");
+
+	/**
+	 * Regex for capturing one layer down of type parameters
+	 * <br><br>
+	 *
+	 * Given:
+	 * <pre>
+	 * {@code java.util.List<org.eclipse.ice.Car>}
+	 * </pre>
+	 * Capture group 1 will be:
+	 * <pre>
+	 * {@code org.eclipse.ice.Car}
+	 * </pre>
+	 *
+	 * Given:
+	 * <pre>
+	 * {@code java.util.List<java.util.Set<org.eclipse.ice.Car>>}
+	 * </pre>
+	 * Capture group 1 will be:
+	 * <pre>
+	 * {@code java.util.Set<org.eclipse.ice.Car>}
+	 * </pre>
+	 * Given:
+	 * <pre>
+	 * {@code java.util.Map<String, java.util.Set<org.eclipse.ice.Car>>}
+	 * </pre>
+	 * Capture group 1 will be:
+	 * <pre>
+	 * {@code String, java.util.Set<org.eclipse.ice.Car>}
+	 * </pre>
+	 */
+	private static final Pattern TYPE_PARAMETERS = Pattern.compile("<([<, \\w\\$\\.>]+)+>>*");
+
+	/**
+	 * Regex for type parameters separator.
+	 */
+	private static final Pattern TYPE_PARAMETER_SEP = Pattern.compile("\\s*,\\s*");
 
 	/**
 	 * Lookup table for fully qualified types to their shortened types.
@@ -160,5 +200,52 @@ public class Types {
 		}
 		matcher.appendTail(resolved);
 		return resolved.toString();
+	}
+
+	/**
+	 * Get the type parameters of the given type if present.
+	 * @param type from which to retrieve type parameters
+	 * @return type parameters if present, empty list otherwise.
+	 */
+	public static List<String> getTypeParameters(String type) {
+		Matcher matcher = TYPE_PARAMETERS.matcher(type);
+		if (matcher.find()) {
+			return Arrays.asList(
+				TYPE_PARAMETER_SEP.split(matcher.group(1))
+			);
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Return the key type of a Map.
+	 * @param type Map type from which key type is retrieved
+	 * @return type as string or null if not a map type
+	 */
+	public static String getMapKeyType(String type) {
+		List<String> params = getTypeParameters(type);
+		if (params.size() == 2) {
+			return params.get(0);
+		}
+		return null;
+	}
+
+	/**
+	 * Return the value type of both simple containers and maps. If the passed
+	 * type is a Map, the second type parameter is returned. If the passed type
+	 * is a List, Set, or other single type container, the first and only type
+	 * parameter is returned.
+	 * @param type from which contained value type is retrieved
+	 * @return first type parameter of containers, second type parameter of
+	 *         maps.
+	 */
+	public static String getContainedValueType(String type) {
+		List<String> params = getTypeParameters(type);
+		if (params.size() == 2) {
+			return params.get(1);
+		} else if (params.size() == 1) {
+			return params.get(0);
+		}
+		return null;
 	}
 }

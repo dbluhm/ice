@@ -72,3 +72,15 @@
 	#end
 	#end
 #end
+
+## Jackson type helpers
+#macro(jackson)
+	#set($type = "#evaluate(${field.Type})")
+	#if($type.contains("List") || $type.contains("Map"))
+	#set($key = $types.getMapKeyType("#evaluate(${field.Type})"))
+	#set($value = $types.getContainedValueType("#evaluate(${field.Type})"))
+	#end
+	#@nonewline
+	@JsonProperty("${field.VarName}")#if($key || $value) @JsonDeserialize(#if($key)keyAs = ${types.resolve($key)}.class#end#if($key && $value), #end#if($value)contentAs = ${types.resolve($value)}.class#end)#end
+	#end
+#end
