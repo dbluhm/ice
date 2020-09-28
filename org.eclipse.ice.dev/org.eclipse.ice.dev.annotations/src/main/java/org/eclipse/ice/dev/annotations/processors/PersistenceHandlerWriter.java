@@ -11,6 +11,8 @@
 
 package org.eclipse.ice.dev.annotations.processors;
 
+import java.io.Writer;
+
 import lombok.Builder;
 import lombok.NonNull;
 
@@ -19,14 +21,6 @@ import lombok.NonNull;
  * @author Daniel Bluhm
  */
 public class PersistenceHandlerWriter extends VelocitySourceWriter {
-
-	/**
-	 * Location of PersistenceHandler template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
-	 */
-	private static final String PERSISTENCE_HANDLER_TEMPLATE = "templates/PersistenceHandler.vm";
 
 	/**
 	 * Context key for package.
@@ -72,10 +66,9 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 	public PersistenceHandlerWriter(
 		String packageName, String elementInterface, String interfaceName,
 		String className, String implementation, String collection,
-		@NonNull Fields fields, @NonNull Types types
+		@NonNull Fields fields, @NonNull Types types, Writer writer
 	) {
 		super();
-		this.template = PERSISTENCE_HANDLER_TEMPLATE;
 		this.context.put(PACKAGE, packageName);
 		this.context.put(ELEMENT_INTERFACE, elementInterface);
 		this.context.put(CLASS, className);
@@ -84,5 +77,6 @@ public class PersistenceHandlerWriter extends VelocitySourceWriter {
 		this.context.put(IMPLEMENTATION, implementation);
 		this.context.put(FIELDS, fields);
 		this.context.put(TYPES, types);
+		this.writer = writer;
 	}
 }

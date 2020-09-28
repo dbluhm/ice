@@ -139,6 +139,24 @@ class DataElementProcessorTest {
 	}
 
 	/**
+	 * Compile the sources with needed processors.
+	 * @param sources to compile
+	 * @return Compilation result
+	 */
+	private static Compilation compile(JavaFileObject... sources) {
+		try {
+		return javac()
+			.withProcessors(
+				getLombokAnnotationProcessor(),
+				new DataElementProcessor()
+			).compile(sources);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
 	 * Assert that the interface generated in this compilation matches the given
 	 * pattern.
 	 * @param compilation about which the assertion is made
