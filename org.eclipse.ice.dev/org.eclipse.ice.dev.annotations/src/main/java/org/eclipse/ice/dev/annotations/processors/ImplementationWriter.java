@@ -13,6 +13,7 @@
 package org.eclipse.ice.dev.annotations.processors;
 
 
+import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 
 /**
@@ -56,8 +57,10 @@ public abstract class ImplementationWriter extends VelocitySourceWriter {
 	 * @param fields
 	 * @param generatedFile
 	 */
-	public ImplementationWriter(String packageName, String interfaceName, String className, Fields fields,
-			JavaFileObject generatedFile) {
+	public ImplementationWriter(
+		String packageName, String interfaceName, String className,
+		@NonNull Fields fields, @NonNull Types types, FileObject generatedFile
+	) {
 		super();
 		this.context.put(PACKAGE, packageName);
 		this.context.put(INTERFACE, interfaceName);

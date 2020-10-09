@@ -19,22 +19,20 @@ import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 
 import lombok.Builder;
+import lombok.NonNull;
 
 /**
  * Implementation of the VelocitySourceWriter that handles generating the
  * DataElementImplementation
  * 
- * @author Michael Walsh
+ * @author Daniel Bluhm
  */
-public class DataElementImplementationWriter extends ImplementationWriter {
+public class DataElementTypeScriptWriter extends TypeScriptWriter {
 
 	/**
-	 * Location of DataElement template for use with velocity.
-	 *
-	 * Use of Velocity ClasspathResourceLoader means files are discovered relative
-	 * to the src/main/resources folder.
+	 * Template used for this writer.
 	 */
-	private static final String IMPL_TEMPLATE = "templates/DataElement.vm";
+	private static final String TEMPLATE = "templates/TypeScript.vm";
 
 	/**
 	 * Constructor
@@ -46,17 +44,19 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 * @param generatedFile
 	 */
 	@Builder
-	public DataElementImplementationWriter(String packageName, String interfaceName, String className, Fields fields,
-			Types types, FileObject generatedFile) {
-		super(packageName, interfaceName, className, fields, types, generatedFile);
-		this.template = IMPL_TEMPLATE;
+	public DataElementTypeScriptWriter(
+		String name, @NonNull Fields fields, @NonNull Types types,
+		FileObject generatedFile
+	) {
+		super(name, fields, types, generatedFile);
+		this.template = TEMPLATE;
 	}
 
 	/**
 	 * Private argless constructor purely for use of the static method to have
 	 * access to the inherited getInitializer() method
 	 */
-	private DataElementImplementationWriter() {
+	private DataElementTypeScriptWriter() {
 		super();
 	}
 
@@ -66,23 +66,25 @@ public class DataElementImplementationWriter extends ImplementationWriter {
 	 */
 	@Override
 	public BiFunction<FileObject, Map, List<VelocitySourceWriter>> getInitializer() {
-		return (fileObject, context) -> 
-					Arrays.asList(DataElementImplementationWriter.builder()
-					.packageName((String) context.get(MetaTemplateProperty.PACKAGE))
-					.interfaceName((String) context.get(MetaTemplateProperty.INTERFACE))
-					.className((String) context.get(MetaTemplateProperty.CLASS))
-					.fields((Fields) context.get(MetaTemplateProperty.FIELDS))
-					.types(((Fields) context.get(MetaTemplateProperty.FIELDS)).getTypes())
-					.generatedFile(fileObject).build());
+		return (fileObject, context) -> {
+			Fields trimmed = ((Fields) context.get(MetaTemplateProperty.FIELDS)).getNonDefaultFields();
+			return Arrays.asList(
+				DataElementTypeScriptWriter.builder()
+				.name((String) context.get(MetaTemplateProperty.CLASS))
+				.fields(trimmed)
+				.types(trimmed.getTypes())
+				.generatedFile(fileObject).build()
+			);
+		};
 	}
 
 	/**
 	 * Static method for cleanly fetching an initializer
 	 * 
-	 * @return DataElementImplementationWriter init lambda
+	 * @return DataElementTypeScriptWriter init lambda
 	 */
 	public static BiFunction<FileObject, Map, List<VelocitySourceWriter>> getContextInitializer() {
-		return new DataElementImplementationWriter().getInitializer();
+		return new DataElementTypeScriptWriter().getInitializer();
 	}
 
 }
