@@ -14,14 +14,13 @@ package org.eclipse.ice.dev.annotations.processors;
 
 
 import javax.tools.FileObject;
-import javax.tools.JavaFileObject;
 
 /**
  * Writer for DataElement Implementation classes.
  * 
  * @author Daniel Bluhm
  */
-public abstract class ImplementationWriter extends VelocitySourceWriter {
+public abstract class ImplementationWriter extends SelfInitializingWriter {
 
 	/**
 	 * Context key for package.
@@ -61,13 +60,12 @@ public abstract class ImplementationWriter extends VelocitySourceWriter {
 		String packageName, String interfaceName, String className,
 		@NonNull Fields fields, @NonNull Types types, FileObject generatedFile
 	) {
-		super();
+		super(generatedFile);
 		this.context.put(PACKAGE, packageName);
 		this.context.put(INTERFACE, interfaceName);
 		this.context.put(CLASS, className);
 		this.context.put(FIELDS, fields);
 		this.context.put(TYPES, types);
-		this.generatedFile = generatedFile;
 	}
 
 	protected ImplementationWriter() {
