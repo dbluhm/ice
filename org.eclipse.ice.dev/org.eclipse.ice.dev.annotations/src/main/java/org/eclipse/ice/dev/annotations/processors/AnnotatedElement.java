@@ -31,42 +31,7 @@ import javax.lang.model.element.AnnotationValue;
  * 
  * @author Daniel Bluhm
  */
-public abstract class AnnotatedElement {
-	
-	/**
-	 * The value appended to DataElement implementation class names.
-	 */
-	private final static String IMPL_SUFFIX = "Implementation";
-
-	/**
-	 * The value appended to DataElement Persistence Handler class names.
-	 */
-	private final static String PERSISTENCE_SUFFIX = "PersistenceHandler";
-
-	/**
-	 * The fully qualified name of this element.
-	 */
-	@Getter
-	private String fullyQualifiedName;
-
-	/**
-	 * The name of the DataElement as extracted from the DataElement annotation.
-	 */
-	@Getter
-	private String name;
-
-	/**
-	 * The package of this element represented as a String.
-	 */
-	@Getter
-	private String packageName;
-
-	/**
-	 * The name of the collection as extracted from Persisted or null.
-	 */
-	@Getter
-	private String collectionName;
-	
+public class AnnotatedElement {
 	/**
 	 * List of all annotation mirrors on this element.
 	 */
