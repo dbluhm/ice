@@ -21,13 +21,8 @@ import org.eclipse.ice.data.JavascriptValidator;
  * default.
  */
 public class DefaultFields {
-	
-	/* 
-	 * Explicit private constructor to hide implicit public constructor, otherwise this would be a code smell
-	 */
-	private DefaultFields() {
-		
-	}
+
+	private DefaultFields() {}
 
 	/**
 	 * The private UUID of this element.
@@ -97,7 +92,7 @@ public class DefaultFields {
 
 	/**
 	 * Get the statically defined default fields.
-	 * 
+	 *
 	 * @return list of Fields
 	 */
 	public static List<Field> get() {
@@ -106,7 +101,7 @@ public class DefaultFields {
 
 	/**
 	 * Format long as String for use as default value initializer.
-	 * 
+	 *
 	 * @param value the value to be formatted.
 	 * @return String
 	 */
@@ -116,7 +111,7 @@ public class DefaultFields {
 
 	/**
 	 * Format String as escaped String for use as default value initializer.
-	 * 
+	 *
 	 * @param value the value to be formatted.
 	 * @return String
 	 */
@@ -126,7 +121,7 @@ public class DefaultFields {
 
 	/**
 	 * Format boolean as String for use as default value initializer.
-	 * 
+	 *
 	 * @param value the value to be formatted.
 	 * @return String
 	 */
